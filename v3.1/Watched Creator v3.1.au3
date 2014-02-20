@@ -1,8 +1,8 @@
 #region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_icon=C:\Users\Stuart\My Dropbox\YAMJ\Graphics\Logo (New)\YAMJ_Logo.ico
-#AutoIt3Wrapper_outfile=Watched Creator v3.0.exe
+#AutoIt3Wrapper_Icon=C:\Users\Stuart\Dropbox\YAMJ\Code\_AutoIT\Watched_Creator\YAMJ_Logo.ico
+#AutoIt3Wrapper_Outfile=Watched Creator v3.1.exe
 #AutoIt3Wrapper_Compression=4
-#AutoIt3Wrapper_UseX64=n
+#AutoIt3Wrapper_Compile_Both=y
 #endregion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 #include <Array.au3>
@@ -12,7 +12,7 @@
 
 Opt('MustDeclareVars', 1)
 
-Global $gTitle = "Watched Creator v3.0"
+Global $gTitle = "Watched Creator v3.1"
 Global $gFilesToProcess[1]
 Global $gIniFile = "Watched Creator.ini"
 Global $gBaseDir
@@ -21,8 +21,9 @@ Global $gCustomOutputDir
 Global $gFileTypes
 Global $gIncludeBluRay
 Global $gIncludeVideoTS
+Global $gSkipList
 
-;_DebugSetup($gTitle & " debug")
+_DebugSetup($gTitle & " debug")
 _Main()
 Exit
 
@@ -63,6 +64,21 @@ Func processDirectory($lSearchDirectory)
 
 	;$lDirArray = _FileListToArray($lSearchDirectory)
 	;_ArrayDisplay($lDirArray)
+
+	For $lLoop = 0 To UBound($gSkipList) - 1
+		If StringInStr($lSearchDirectory, $gSkipList[$lLoop], 2) > 0 Then
+			MsgBox(64, "Skip found", "Found '" & $gSkipList[$lLoop] & "', skipping the directory",5)
+			Return
+		EndIf
+	Next
+
+
+
+	If StringInStr($lSearchDirectory, "RECYCLE.BIN", 2) > 0 Then
+		MsgBox(0, "Skip found", "Found RECYCLE.BIN, skipping")
+		Return
+	EndIf
+
 
 	FileChangeDir($lSearchDirectory)
 	_DebugOut("Changed directory to " & @WorkingDir)
@@ -193,6 +209,7 @@ Func iniFileWrite()
 	IniWrite($gIniFile, "Settings", "IncludeVideoTS", "True")
 	IniWrite($gIniFile, "Settings", "CustomOutputDir", "False")
 	IniWrite($gIniFile, "Settings", "OutputDir", "T:\Jukebox\Watched")
+	IniWrite($gIniFile, "Settings", "SkipList", "RECYCLE.BIN")
 
 EndFunc   ;==>iniFileWrite
 
@@ -201,7 +218,7 @@ Func iniFileRead()
 		iniFileWrite()
 	EndIf
 
-	Local $lFileList, $lTemp
+	Local $lFileList, $lSkipList
 
 	$gBaseDir = IniRead($gIniFile, "Settings", "StartDir", "T:\Films\")
 	$lFileList = IniRead($gIniFile, "Settings", "FileTypes", "AVI,MKV,MPG,ISO")
@@ -209,6 +226,7 @@ Func iniFileRead()
 	$gIncludeVideoTS = parseBoolean(IniRead($gIniFile, "Settings", "IncludeVideoTS", "True"))
 	$gCustomOutputDir = parseBoolean(IniRead($gIniFile, "Settings", "CustomOutputDir", "False"))
 	$gOutputDir = IniRead($gIniFile, "Settings", "OutputDir", "T:\Jukebox\Watched")
+	$lSkipList = IniRead($gIniFile, "Settings", "SkipList", "RECYCLE.BIN")
 
 	_DebugOut("Base Dir  : " & $gBaseDir)
 	_DebugOut("File Types: " & $lFileList)
@@ -216,8 +234,10 @@ Func iniFileRead()
 	_DebugOut("VideoTS   : " & $gIncludeVideoTS)
 	_DebugOut("Custom Dir: " & $gCustomOutputDir)
 	_DebugOut("Output Dir: " & $gOutputDir)
+	_DebugOut("Skip List : " & $lSkipList)
 
 	$gFileTypes = _StringExplode($lFileList, ",")
+	$gSkipList = _StringExplode($lSkipList, ",")
 
 EndFunc   ;==>iniFileRead
 
