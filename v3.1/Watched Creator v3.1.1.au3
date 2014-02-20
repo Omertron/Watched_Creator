@@ -1,9 +1,9 @@
-#region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=C:\Users\Stuart\Dropbox\YAMJ\Code\_AutoIT\Watched_Creator\YAMJ_Logo.ico
-#AutoIt3Wrapper_Outfile=Watched Creator v3.1.exe
+#AutoIt3Wrapper_Outfile=Watched Creator v3.1.1.exe
 #AutoIt3Wrapper_Compression=4
-#AutoIt3Wrapper_Compile_Both=y
-#endregion ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_UseX64=n
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 #include <Array.au3>
 #include <Debug.au3>
@@ -12,7 +12,7 @@
 
 Opt('MustDeclareVars', 1)
 
-Global $gTitle = "Watched Creator v3.1"
+Global $gTitle = "Watched Creator v3.1.1"
 Global $gFilesToProcess[1]
 Global $gIniFile = "Watched Creator.ini"
 Global $gBaseDir
@@ -23,7 +23,7 @@ Global $gIncludeBluRay
 Global $gIncludeVideoTS
 Global $gSkipList
 
-_DebugSetup($gTitle & " debug")
+;_DebugSetup($gTitle & " debug")
 _Main()
 Exit
 
