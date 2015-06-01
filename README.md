@@ -67,3 +67,12 @@ A comma separated list of words that will exclude a directory from the automatic
 *Default / Example:*
 
     SkipList=RECYCLE.BIN
+
+### Watched File Extension
+By default this is `.watched` but you can change this to be something more suitable for your media centre.
+
+Remember to include the separator, such as `.`
+
+*Default / Example:*
+
+    Extension=.watched
